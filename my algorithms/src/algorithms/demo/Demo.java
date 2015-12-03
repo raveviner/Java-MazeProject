@@ -22,7 +22,7 @@ public class Demo {
 	 */
 	public void run(){
 		Maze3dGenerator mg = new MyMaze3dGenerator();
-		Maze3d maze=mg.generate(30, 30, 6);
+		Maze3d maze=mg.generate(20, 20, 5);
 		maze.printMaze();
 		Solution<Position> s1, s2,s3;
 		System.out.println("BFS:");
