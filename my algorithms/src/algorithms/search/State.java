@@ -1,5 +1,7 @@
 package algorithms.search;
 
+import java.io.Serializable;
+
 /**
  * We use <i>State</i> class to help us define each node in a search algorithm.
  * <i>State</i>'s data members are: T(type), cost, and the state it came from. 
@@ -7,7 +9,9 @@ package algorithms.search;
  * @param <T> - is the type which best describes the state.
  */
 
-public class State<T> implements Comparable<State<T>> {
+public class State<T> implements Comparable<State<T>>,Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	private T state;
 	private double cost; // cost to reach this state
 	private State<T> cameFrom; // the state we came from to this state

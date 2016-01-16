@@ -1,5 +1,6 @@
 package algorithms.search;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -11,7 +12,8 @@ import java.util.Collections;
  * @param <T> - is the type which best describes the state.
  */
 
-public class Solution<T> {
+@SuppressWarnings("serial")
+public class Solution<T> implements Serializable {
 
 	private ArrayList<State<T>> list = new ArrayList<State<T>>();
 	/**
@@ -31,6 +33,15 @@ public class Solution<T> {
 	public String toString() {
 		Collections.reverse(list);
 		return list.toString();
+	}
+	
+	public ArrayList<State<T>> getList(){
+		Collections.reverse(list);
+		return list;
+	}
+
+	public void setList(ArrayList<State<T>> list) {
+		this.list = list;
 	}
 
 }

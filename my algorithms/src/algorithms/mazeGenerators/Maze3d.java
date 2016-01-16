@@ -1,9 +1,11 @@
 package algorithms.mazeGenerators;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Maze3d {
+@SuppressWarnings("serial")
+public class Maze3d implements Serializable {
 
 	private int[][][] maze3d;
 	private int initialX, initialY, initialZ; // start point
@@ -14,7 +16,27 @@ public class Maze3d {
 		maze3d = new int[x][y][z];
 
 	}
-
+	
+	// c'tor that converts byte array to and int 3d array.
+	public Maze3d(byte[] ary){
+		maze3d=new int[(int)ary[1]][(int)ary[2]][(int)ary[3]];
+		this.initialX=(int)ary[4];
+		this.initialY=(int)ary[5];
+		this.initialZ=(int)ary[6];
+		this.finalX=(int)ary[7];
+		this.finalY=(int)ary[8];
+		this.finalZ=(int)ary[9];
+		int counter=10;
+		for (int k = 0; k < (int)ary[3]; k++) {
+			for (int j = 0; j < (int)ary[2]; j++) {
+				for (int i = 0; i < (int)ary[1]; i++) {
+					this.maze3d[i][j][k]=(int)ary[counter];
+					counter++;
+				}
+			}
+		}
+	}
+	
 	// copy constructor
 	public Maze3d(Maze3d maze) {
 		int x, y, z;
@@ -182,7 +204,6 @@ public class Maze3d {
 
 		Position[] walls = new Position[6];
 
-		
 		if ((x + 2) < getXlength())
 			if (maze3d[x + 1][y][z] == 1) {
 				walls[0] = new Position(x + 1, y, z);
@@ -199,11 +220,11 @@ public class Maze3d {
 			}
 
 		if (x > 1)
-			if (maze3d[x - 1][y][z] == 1 ) {
+			if (maze3d[x - 1][y][z] == 1) {
 				walls[3] = new Position(x - 1, y, z);
 			}
 		if (y > 1)
-			if (maze3d[x][y - 1][z] == 1 ) {
+			if (maze3d[x][y - 1][z] == 1) {
 				walls[4] = new Position(x, y - 1, z);
 			}
 		if (z > 1)
@@ -214,5 +235,62 @@ public class Maze3d {
 		return walls;
 
 	}
+	
+	/**
+	 * <i>toByteArray</i> is a method that converts 3D maze into 1D array of bytes.
+	 * Used in compression.
+	 * @return byte[]
+	 */
+	public byte[] toByteArray() {
+		byte[] ary = new byte[(this.getXlength() * this.getYlength() * this.getZlength())+10];
+		int counter = 10;
+		ary[0]= (byte)10; // indicates the number of variables that shouldn't be compressed.
+		ary[1]=(byte)this.getXlength();//method also saves the high, length and depth of the maze
+		ary[2]=(byte)this.getYlength();
+		ary[3]=(byte)this.getZlength();
+		ary[4]=(byte)this.initialX;//start position
+		ary[5]=(byte)this.initialY;
+		ary[6]=(byte)this.initialZ;
+		ary[7]=(byte)this.finalX;//goal position
+		ary[8]=(byte)this.finalY;
+		ary[9]=(byte)this.finalZ;
+		for (int k = 0; k < this.getZlength(); k++) {
+			for (int j = 0; j < this.getYlength(); j++) {
+				for (int i = 0; i < this.getXlength(); i++) {
+					ary[counter] = (byte) this.maze3d[i][j][k];
+					counter++;
+				}
+			}
+		}
+		return ary;
+	}
 
+	
+	@Override
+	public boolean equals(Object arg0) {
+		if (this == arg0)
+			return true;
+		if (arg0 == null)
+			return false;
+		if (getClass() != arg0.getClass())
+			return false;
+		Maze3d maze = (Maze3d) arg0;
+		if(Arrays.equals(this.toByteArray(), maze.toByteArray()))
+			return true;
+		return false;
+		
+		
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((maze3d == null) ? 0 : maze3d.hashCode());
+		return result;
+	}
+	
+	
+	
+	
 }

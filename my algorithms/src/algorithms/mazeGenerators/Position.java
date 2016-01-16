@@ -1,6 +1,9 @@
 package algorithms.mazeGenerators;
 
-public class Position {
+import java.io.Serializable;
+
+@SuppressWarnings("serial")
+public class Position implements Serializable {
 	private int x, y, z;
 
 	public int getX() {
