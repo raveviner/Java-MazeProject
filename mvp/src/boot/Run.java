@@ -49,7 +49,7 @@ public class Run {
 		if (properties.getInterfaceView().equals("GUI")) {
 			StartWindow s = new StartWindow(1300, 1000, properties.getSearchAlgo());
 			MyModel m = new MyModel(properties.getNumOfThreads());
-			m.loadSolutions();
+		
 			MyGUIView v = new MyGUIView(hmap, s);
 			Presenter p = new Presenter(m, v);
 

@@ -61,8 +61,10 @@ public class StartWindow extends BasicWindow {
 		this.m = m;
 	}
 
+
 	@Override //inherited from BasicWindow
 	public void initWidgets() {
+		
 
 		shell.setLayout(new GridLayout(2, false));
 
@@ -99,6 +101,7 @@ public class StartWindow extends BasicWindow {
 		maze.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 5));
 		maze.setEnabled(false);
 
+		//solve button
 		Button solve = new Button(shell, SWT.PUSH);
 		solve.setText("Solve");
 		solve.setEnabled(false);//enabled only when a maze is ready
@@ -119,6 +122,7 @@ public class StartWindow extends BasicWindow {
 		exit.setText("Exit");
 		exit.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, 1, 1));
 
+		//create button's action
 		create.addSelectionListener(new SelectionListener() {
 
 			@Override
@@ -144,8 +148,8 @@ public class StartWindow extends BasicWindow {
 
 						// gets and displays the last generated maze
 						setChanged();
-						notifyObservers("display this");
-						maze.setMaze(m);
+						notifyObservers("display this"); 
+						maze.setMaze(m);//passing the maze to the widget
 						p = m.getStartPosition();
 						maze.setPostion(p);
 						maze.display();
@@ -159,6 +163,7 @@ public class StartWindow extends BasicWindow {
 						else
 							stepBackward.setForeground(display.getSystemColor(SWT.COLOR_GRAY));
 
+						//enabling the solve and save button
 						solve.setEnabled(true);
 						fileSaveItem.setEnabled(true);
 					}
@@ -188,7 +193,7 @@ public class StartWindow extends BasicWindow {
 
 			@Override
 			public void keyPressed(KeyEvent e) {
-
+				//changing the position of the character and redrawing the maze
 				if (e.keyCode == SWT.ARROW_LEFT && m.getValue(p.getX() - 1, p.getY(), p.getZ()) == 0) {
 					p.setX(p.getX() - 1);
 					maze.setPostion(p);
@@ -299,7 +304,7 @@ public class StartWindow extends BasicWindow {
 
 				setChanged();
 				notifyObservers("display solution this");
-
+				
 				ArrayList<State<Position>> list = s.getList();
 
 				Timer timer = new Timer();
@@ -392,6 +397,8 @@ public class StartWindow extends BasicWindow {
 
 			@Override
 			public void widgetSelected(SelectionEvent arg0) {
+				setChanged();
+				notifyObservers("save solution solutions.gzip" ); //saving the new solution hash map before exiting
 				MessageBox messageBox = new MessageBox(shell, SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 				messageBox.setMessage("Do you really want to exit?");
 				messageBox.setText("Exiting");
@@ -455,6 +462,8 @@ public class StartWindow extends BasicWindow {
 
 			@Override
 			public void handleEvent(Event arg0) {
+				setChanged();
+				notifyObservers("save solution solutions.gzip" );
 				MessageBox messageBox = new MessageBox(shell, SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 				messageBox.setMessage("Do you really want to exit?");
 				messageBox.setText("Exiting");

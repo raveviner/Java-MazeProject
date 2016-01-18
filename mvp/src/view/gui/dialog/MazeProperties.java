@@ -25,7 +25,8 @@ import org.xml.sax.SAXException;
 
 /**
  * 
- * Window that let you choose the properties for the maze.
+ * Window that let you choose the properties for the maze. This class changes the properties file
+ * with the new properties.
  *
  */
 public class MazeProperties {

@@ -7,8 +7,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Observable;
@@ -19,7 +21,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
 
 import algorithms.io.MyCompressorOutputStream;
 import algorithms.io.MyDecompressorInputStream;
@@ -31,21 +32,81 @@ import algorithms.search.heuristics.MazeAirDistance;
 import algorithms.search.searchables.SearchableMaze;
 import algorithms.search.searchers.AStar;
 import algorithms.search.searchers.BFS;
-
+/**
+ * Model class is a part of MVP structure. The Model class is responsible for the calculations of a maze.
+ *
+ */
 public class MyModel extends Observable implements Model {
 
-	private int numOfThreads = 1;
+	private int numOfThreads = 1; //number of threads running in executor
 	private HashMap<String, Maze3d> hmap = new HashMap<String, Maze3d>();
-	private HashMap<SaveableMaze3d, Solution<Position>> shmap = new HashMap<SaveableMaze3d, Solution<Position>>();
+	private HashMap<Maze3d, Solution<Position>> shmap = new HashMap<Maze3d, Solution<Position>>();
 	private ExecutorService executor = Executors.newFixedThreadPool(numOfThreads);
 	private Object data;
-	private Future<Maze3d> futureMaze;
-	private Future<Solution<Position>> futureSolution;
+	private Future<Maze3d> futureMaze; //used in maze generate
+	private Future<Solution<Position>> futureSolution; //used in solution calculation
 	private Maze3d maze3d;
 	private Solution<Position> solution;
 	private SaveableMaze3d saveableMaze;
-	//private String mazeName;
-
+	private Socket theServer;
+	private PrintWriter outToServer;
+	private ObjectInputStream in;
+	
+	/**
+	 * Initializes the connection to the server.
+	 * @throws UnknownHostException
+	 * @throws IOException
+	 */
+	public void initServer() throws UnknownHostException, IOException{
+		System.out.println("Client Side");
+		theServer=new Socket("localhost",5400);// connecting to socket on localhost port 5400
+		System.out.println("connected to server!");
+		
+		outToServer=new PrintWriter(theServer.getOutputStream());
+		sendToServer("load solutions"); //asking for solutions from server
+		in=new ObjectInputStream(theServer.getInputStream());
+		
+		new Thread(new Runnable() {
+			
+			@SuppressWarnings("unchecked")
+			@Override
+			public void run() {
+				try {
+					
+					try {
+						shmap = (HashMap<Maze3d, Solution<Position>>) in.readObject(); //getting hash map from server
+						
+					} catch (ClassNotFoundException e) {
+						e.printStackTrace();
+					}
+					
+						
+						
+					
+				
+					System.out.println("communication lost");
+					outToServer.close();
+					theServer.close();
+				} catch (IOException e) {
+					
+					e.printStackTrace();
+				}
+				
+				
+			}
+		}).start();
+		
+		
+	}
+	/**
+	 * passing command to the server
+	 * @param String
+	 */
+	private void sendToServer(String command){
+		outToServer.println(command);
+		outToServer.flush();
+	}
+	
 	@Override
 	public Solution<Position> getFutureSolution() throws InterruptedException, ExecutionException {
 		return futureSolution.get();
@@ -58,6 +119,13 @@ public class MyModel extends Observable implements Model {
 
 	public MyModel(int numOfThreads) {
 		this.numOfThreads = numOfThreads;
+		
+		//server connection is initialized in the CTOR
+		try {
+			initServer();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 	}
 
@@ -84,6 +152,8 @@ public class MyModel extends Observable implements Model {
 	@Override
 	public void generate3DMaze(String name, int x, int y, int z) {
 
+	
+		
 		futureMaze = executor.submit(new Callable<Maze3d>() {
 
 			@Override
@@ -93,6 +163,7 @@ public class MyModel extends Observable implements Model {
 				
 				setChanged();
 				notifyObservers("done generate maze");
+				
 				return maze;
 			}
 		});
@@ -161,6 +232,7 @@ public class MyModel extends Observable implements Model {
 		byte[] b = Arrays.copyOf(buffer, i-1);
 		
 		saveableMaze = new SaveableMaze3d(b);
+		
 		hmap.put(name, saveableMaze.getMaze());
 		hmap.put(saveableMaze.getName(), saveableMaze.getMaze());
 		setChanged();
@@ -187,6 +259,8 @@ public class MyModel extends Observable implements Model {
 
 	@Override
 	public void solve(String name, String algo) {
+		
+		//TODO fix shmap
 		if (shmap.containsKey(hmap.get(name))) {
 			setChanged();
 			notifyObservers("maze is solved");
@@ -202,13 +276,13 @@ public class MyModel extends Observable implements Model {
 					if (algo.equals("BFS")) {
 						BFS<Position> bfs = new BFS<Position>();
 						s = bfs.search(new SearchableMaze(maze));
-						shmap.put(new SaveableMaze3d(name, maze), s);
+						shmap.put(maze, s);
 						setChanged();
 						notifyObservers("maze is solved");
 					} else if (algo.equals("AStar")) {
 						AStar<Position> aStar = new AStar<Position>(new MazeAirDistance<Position>());
 						s = aStar.search(new SearchableMaze(maze));
-						shmap.put(new SaveableMaze3d(name, maze), s);
+						shmap.put(maze, s);
 						setChanged();
 						notifyObservers("maze is solved");
 
@@ -218,7 +292,6 @@ public class MyModel extends Observable implements Model {
 				}
 			});
 		}
-
 	}
 
 	@Override
@@ -247,14 +320,8 @@ public class MyModel extends Observable implements Model {
 
 	@Override
 	public void saveSolution(String fileName) throws FileNotFoundException, IOException {
-		//OutputStream out = new GZIPOutputStream(new FileOutputStream("solutions.gzip"));
-		ObjectOutputStream o = new ObjectOutputStream(new GZIPOutputStream(new FileOutputStream("solutions.gzip")));
-		o.writeObject(shmap);
-		o.flush();
-		o.close();
 		
-		setChanged();
-		notifyObservers("solutions are saved");
+		sendToServer("save solutions "+fileName);
 
 	}
 	
@@ -269,7 +336,7 @@ public class MyModel extends Observable implements Model {
 				ObjectInputStream mazeZip = new ObjectInputStream(new GZIPInputStream(new FileInputStream(myFile)));
 
 				
-				this.shmap = (HashMap<SaveableMaze3d, Solution<Position>>) mazeZip.readObject();
+				this.shmap = (HashMap<Maze3d, Solution<Position>>) mazeZip.readObject();
 				
 				mazeZip.close();
 			} 

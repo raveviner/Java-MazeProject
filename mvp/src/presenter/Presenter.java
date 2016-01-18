@@ -9,7 +9,11 @@ import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
 import model.Model;
 import view.View;
-
+/**
+ * Presenter class gets notified any time the view or the model send notification. Presenter is
+ * then manages the model and view.
+ *
+ */
 public class Presenter implements Observer {
 	private Model m;
 	private View v;
@@ -22,14 +26,14 @@ public class Presenter implements Observer {
 	}
 
 	@Override
-	public void update(Observable o, Object arg) {		
-		if (o == v) {
+	public void update(Observable o, Object arg) {
+		if (o == v) {//notification came from view
 
 			command = (Command) arg;
 			command.doCommand(v.getUserCommand());
 
 		}
-		if (o == m) {
+		if (o == m) {//notification came from model
 			String hint = (String) arg;
 			if (hint.equals("done dir"))
 				v.displayDir((String[]) m.getData());
@@ -38,7 +42,8 @@ public class Presenter implements Observer {
 			else if (hint.equals("display this"))
 				try {
 					v.displayMaze((Maze3d) m.getFutureMaze());
-				} catch (InterruptedException | ExecutionException e) {}
+				} catch (InterruptedException | ExecutionException e) {
+				}
 			else if (hint.equals("display"))
 				v.displayMaze((Maze3d) m.getMaze());
 			else if (hint.equals("display cross section"))
@@ -51,14 +56,16 @@ public class Presenter implements Observer {
 				v.displaySize((int) m.getData());
 			else if (hint.equals("file size"))
 				v.displaySize((int) m.getData());
-			else if (hint.equals("maze is solved"))
+			else if (hint.equals("maze is solved")) {
 				v.displayHint(hint);
-			else if (hint.equals("display solution"))
-				v.displaySolution((Solution<Position>)m.getSolution());
+			} else if (hint.equals("display solution"))
+				v.displaySolution((Solution<Position>) m.getSolution());
 			else if (hint.equals("display solution this"))
 				try {
-					v.displaySolution((Solution<Position>)m.getFutureSolution());
-				} catch (InterruptedException | ExecutionException e) {}
+					v.displaySolution((Solution<Position>) m.getFutureSolution());
+				} catch (InterruptedException | ExecutionException e) {
+				}
+
 			else if (hint.equals("solutions are saved"))
 				v.displayHint(hint);
 

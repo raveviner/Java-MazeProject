@@ -8,7 +8,11 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-
+/**
+ * MazeCon class represent the dialog that pops up when generating maze.
+ * It stores the X,Y,Z axis and the name of the maze.
+ *
+ */
 public class MazeCon {
 
 	private Shell shell;
@@ -37,6 +41,9 @@ public class MazeCon {
 
 	}
 
+	/**
+	 * Adds a selection listener to the set button
+	 */
 	public void setSelectionListener(SelectionListener selectedEvent) {
 		set.addSelectionListener(selectedEvent);
 	}

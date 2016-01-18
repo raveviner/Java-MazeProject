@@ -7,7 +7,10 @@ import java.util.concurrent.ExecutionException;
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
-
+/**
+ * Model class is a part of MVP structure. The Model class is responsible for the calculations of a maze.
+ *
+ */
 public interface Model {
 	public void dir(String path);
 	public void generate3DMaze(String name, int x, int y, int z);

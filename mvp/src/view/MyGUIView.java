@@ -58,6 +58,7 @@ public class MyGUIView extends ObservableView implements View, Observer {
 	@Override
 	public void displaySolution(Solution<Position> solution) {
 		sw.setSolution(solution);
+		
 
 	}
 

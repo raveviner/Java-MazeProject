@@ -5,7 +5,10 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import algorithms.mazeGenerators.Maze3d;
-
+/**
+ * SaveableMaze store the maze and its name, making it easier to save and load.
+ *
+ */
 public class SaveableMaze3d implements Serializable {
 
 	
@@ -21,12 +24,7 @@ public class SaveableMaze3d implements Serializable {
 
 	public SaveableMaze3d(byte[] ary) {
 		byte[]a=Arrays.copyOfRange(ary, ary.length-4, ary.length);
-		/*String newA = Arrays.toString(a);// [0,0,0,8]
-		newA = newA.replace("[", "");
-		newA = newA.replace("]", "");
-		newA = newA.replace(", ", "");
-		int newAInt = Integer.parseInt(newA);*/
-		
+				
 		int b=ByteBuffer.wrap(a).getInt();
 		byte[]m=Arrays.copyOfRange(ary, 0, ary.length-4-b);
 		byte[]n=Arrays.copyOfRange(ary, b, ary.length-4);
@@ -66,8 +64,8 @@ public class SaveableMaze3d implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		Maze3d maze = (Maze3d) obj;
-		if(maze.equals(this.maze))
+		Maze3d m = (Maze3d) obj;
+		if(maze.equals(m))
 			return true;
 		else
 			return false;
