@@ -15,6 +15,7 @@ import java.util.Collections;
 @SuppressWarnings("serial")
 public class Solution<T> implements Serializable {
 
+	
 	private ArrayList<State<T>> list = new ArrayList<State<T>>();
 	/**
 	 * This method simply adds a given state (that is a part of a solution) to an array.  
