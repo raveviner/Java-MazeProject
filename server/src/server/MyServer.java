@@ -49,7 +49,8 @@ public class MyServer {
 									try {
 										clientsHandled++;
 										System.out.println("\thandling client " + clientsHandled);
-										clinetHandler.handleClient(someClient.getInputStream(), someClient.getOutputStream());
+										clinetHandler.handleClient(someClient.getInputStream(),
+												someClient.getOutputStream());
 										someClient.close();
 										System.out.println("\tdone handling client " + clientsHandled);
 									} catch (IOException e) {
@@ -79,8 +80,10 @@ public class MyServer {
 		threadpool.shutdown();
 		// wait 10 seconds over and over again until all running jobs have
 		// finished
+		@SuppressWarnings("unused")
 		boolean allTasksCompleted = false;
-		while (!(allTasksCompleted = threadpool.awaitTermination(10, TimeUnit.SECONDS)));
+		while (!(allTasksCompleted = threadpool.awaitTermination(10, TimeUnit.SECONDS)))
+			;
 
 		System.out.println("all the tasks have finished");
 
@@ -94,7 +97,12 @@ public class MyServer {
 	public static void main(String[] args) throws Exception {
 		System.out.println("Server Side");
 		System.out.println("type \"close the server\" to stop it");
-		MyServer server = new MyServer(5400, new MazeClientHandler(), 10);
+		ServerModel model = new ServerModel();
+		
+		
+		MazeClientHandler clientHandler = new MazeClientHandler(model);
+		model.addObserver(clientHandler);
+		MyServer server = new MyServer(5400, clientHandler, 10);
 		server.start();
 
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
