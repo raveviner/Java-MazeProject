@@ -166,7 +166,7 @@ public class Run {
 		if(properties.getInterfaceView().equals("CLI")){
 			
 			MyModel m = new MyModel(properties.getNumOfThreads());
-			m.loadSolutions();
+			
 			MyCLIView v = new MyCLIView(hmap);
 			Presenter p = new Presenter(m, v);
 

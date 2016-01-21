@@ -30,15 +30,16 @@ public class MyCLIView extends ObservableView implements View, Runnable {
 		//running when start() method is called from thread. 
 		//receiving commands from user.
 		try {
-			line = (in.readLine()).split(" ");
+			
+						
+			do {
 
-			while (!(line[0]).equals("exit")) {
-
+				line = (in.readLine()).split(" ");
 				command = hmap.get(line[0]);
 				setChanged();
 				notifyObservers(command);
-				line = (in.readLine()).split(" ");
-			}
+				
+			}while (!(line[0]).equals("exit"));
 
 		} catch (IOException e) {
 			out.println("Incorrect Input");

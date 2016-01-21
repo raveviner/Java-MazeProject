@@ -13,13 +13,16 @@ import java.util.Observer;
 import algorithms.mazeGenerators.Maze3d;
 import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
-
+/**
+ * MazeClientHandler handle clients that use maze 3d game.
+ *
+ */
 public class MazeClientHandler implements ClientHandler, Observer {
 
 	private ServerModel model;
 	private ObjectOutputStream out;
 	
-
+	//CTOR initializes model
 	public MazeClientHandler(ServerModel model) {
 		this.model=model;
 	}
@@ -48,6 +51,7 @@ public class MazeClientHandler implements ClientHandler, Observer {
 		}
 	}
 
+	//notification from ServerModel come here
 	@SuppressWarnings("unchecked")
 	@Override
 	public void update(Observable arg0, Object arg1) {
@@ -60,6 +64,11 @@ public class MazeClientHandler implements ClientHandler, Observer {
 		}
 	}
 
+	/**
+	 * sendToClient receives an Object and passes to the client.
+	 * @param o
+	 * @throws IOException
+	 */
 	private void sendToClient(Object o) throws IOException {
 		out.writeObject(o);
 		out.flush();

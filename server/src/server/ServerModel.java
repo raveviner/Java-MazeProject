@@ -18,18 +18,19 @@ import algorithms.mazeGenerators.Position;
 import algorithms.search.Solution;
 import model.Model;
 /**
- * 
+ * ServerModel is a type of a Model and an Observable class. MazeClientHandler operate this class,
+ * and a notification is sent whenever this class finishes its calculations.
  *
  */
 public class ServerModel extends Observable implements Model {
 
 	
+	//shmap is initialized when loadSolutions is called
+	private HashMap<Maze3d, Solution<Position>> shmap;
 	
-	private HashMap<Maze3d, Solution<Position>> shmap = new HashMap<Maze3d, Solution<Position>>();
-	
-
-
-
+	/**
+	 * saveSolutions save into a zip file hash maps contaings solutions.
+	 */
 	@Override
 	public void saveSolution(String fileName) throws FileNotFoundException, IOException {
 		//OutputStream out = new GZIPOutputStream(new FileOutputStream("solutions.gzip"));
@@ -38,11 +39,14 @@ public class ServerModel extends Observable implements Model {
 		o.flush();
 		o.close();
 		
-		setChanged();
-		notifyObservers("solutions are saved");
+		
 
 	}
-	
+	/**
+	 * loadSolutions loads from a zip file all the solutions into a data member.
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
 	@SuppressWarnings("unchecked")
 	public void loadSolutions() throws ClassNotFoundException, IOException{
 	

@@ -84,9 +84,9 @@ public class MyModel extends Observable implements Model {
 						
 					
 				
-					System.out.println("communication lost");
-					outToServer.close();
-					theServer.close();
+					//System.out.println("communication lost");
+					//outToServer.close();
+					//theServer.close();
 				} catch (IOException e) {
 					
 					e.printStackTrace();
@@ -315,7 +315,16 @@ public class MyModel extends Observable implements Model {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		sendToServer("exit");
 		executor.shutdownNow();
+		System.out.println("disconnected from server");
+		outToServer.close();
+		try {
+			theServer.close();
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		}
 	}
 
 	@Override

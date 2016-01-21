@@ -9,7 +9,10 @@ import java.net.SocketTimeoutException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-
+/**
+ * MyServer class is responsible for opening the server.
+ *
+ */
 public class MyServer {
 
 	int port;
@@ -25,12 +28,17 @@ public class MyServer {
 
 	int clientsHandled = 0;
 
+	//CTOR initializes port, clientHandler and number of clients
 	public MyServer(int port, ClientHandler clinetHandler, int numOfClients) {
 		this.port = port;
 		this.clinetHandler = clinetHandler;
 		this.numOfClients = numOfClients;
 	}
-
+	
+	/**
+	 * starts the running of the server.
+	 * @throws Exception
+	 */
 	public void start() throws Exception {
 		serverSocket = new ServerSocket(port);
 		serverSocket.setSoTimeout(10 * 1000);
@@ -60,7 +68,7 @@ public class MyServer {
 							});
 						}
 					} catch (SocketTimeoutException e) {
-						System.out.println("no clinet connected...");
+						
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
@@ -73,6 +81,10 @@ public class MyServer {
 
 	}
 
+	/**
+	 * closes all threads and sockets.
+	 * @throws Exception
+	 */
 	public void close() throws Exception {
 		stop = true;
 		// do not execute jobs in queue, continue to execute running threads
@@ -82,8 +94,7 @@ public class MyServer {
 		// finished
 		@SuppressWarnings("unused")
 		boolean allTasksCompleted = false;
-		while (!(allTasksCompleted = threadpool.awaitTermination(10, TimeUnit.SECONDS)))
-			;
+		while (!(allTasksCompleted = threadpool.awaitTermination(10, TimeUnit.SECONDS)));
 
 		System.out.println("all the tasks have finished");
 
@@ -99,9 +110,9 @@ public class MyServer {
 		System.out.println("type \"close the server\" to stop it");
 		ServerModel model = new ServerModel();
 		
-		
 		MazeClientHandler clientHandler = new MazeClientHandler(model);
 		model.addObserver(clientHandler);
+		
 		MyServer server = new MyServer(5400, clientHandler, 10);
 		server.start();
 
