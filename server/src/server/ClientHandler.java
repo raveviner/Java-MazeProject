@@ -9,8 +9,8 @@ import java.io.OutputStream;
 public interface ClientHandler {
 	/**
 	 * handleClient knows how to receive InputStream from client and send OutputStream back to client.
-	 * @param InputStream
-	 * @param OutputStream
+	 * @param inFromClient
+	 * @param outToClient
 	 */
 	void handleClient(InputStream inFromClient, OutputStream outToClient);
 }

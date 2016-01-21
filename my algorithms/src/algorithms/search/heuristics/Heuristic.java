@@ -4,7 +4,7 @@ import algorithms.search.State;
 import algorithms.search.searchables.Searchable;
 /**
  * <i>Heuristic</i> is an interface that help calculate the cost of every node in 
- * an {@link AStar} algorithm. It contains method h() that does the calculations.
+ * an AStar algorithm. It contains method h() that does the calculations.
  *
  * @param <T> - is the type which best describes the state.
  */

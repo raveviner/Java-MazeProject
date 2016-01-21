@@ -5,7 +5,7 @@ import java.io.InputStream;
 
 /**
  * <i>MyDecompressorOutputStream</i> is a class designed to decompress a 1 dimensional array of bytes and extract it
- * into an existing array. It uses decorator pattern. It can receive any {@link IutputStream} in its constructor
+ * into an existing array. It uses decorator pattern. It can receive any IutputStream in its constructor
  * and use its read method.
  *
  */

@@ -20,7 +20,7 @@ public class Solution<T> implements Serializable {
 	/**
 	 * This method simply adds a given state (that is a part of a solution) to an array.  
 	 * @param s - represent a State.
-	 * @return ArrayList of States.
+	 * @return ArrayList
 	 */
 	public void AddSolution(State<T> s) {
 		list.add(s);

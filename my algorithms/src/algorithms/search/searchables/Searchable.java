@@ -29,12 +29,12 @@ public interface Searchable<T> {
 	 */
 	public ArrayList<State<T>> successors(State<T> s);
 	/**
-	 * this method is used when {@link AStar} search algorithm is used. It takes all the possible 
+	 * this method is used when AStar search algorithm is used. It takes all the possible 
 	 * moves from a given node in a problem, put it in an ArrayList and adapt it to {@link State}. 
 	 * The cost of each state is calculated using the {@link Heuristic} that is given as a parameter.
 	 * @param s - State
 	 * @param h - Heuristic
-	 * @return
+	 * @return ArrayList<State<T>>
 	 */
 	public ArrayList<State<T>> successorsAStar(State<T> s, Heuristic<T> h);
 	
